@@ -1,0 +1,28 @@
+import requests
+from bs4 import BeautifulSoup 
+
+def findInvoiceNumber(month):
+	url = 'https://invoice.etax.nat.gov.tw/'
+	if(month == 'last'):
+		url = 'https://invoice.etax.nat.gov.tw/lastNumber.html'
+	r = requests.get(url)
+	r.encoding = 'utf-8'
+	soup = BeautifulSoup(r.text, "html.parser")
+	trs = soup.find_all('tr')
+
+	result = {}
+
+	for tr in trs:
+		titles = tr.findChildren('td', {'class': 'text-center'})
+		if(len(titles) > 0):
+			if(titles[0].text == '特別獎'):
+				result['特別獎'] = tr.findChildren('span', {'class': 'font-weight-bold'})[0].text
+			if(titles[0].text == '特獎'):
+				result['特獎'] = tr.findChildren('span', {'class': 'font-weight-bold'})[0].text			
+			if(titles[0].text == '頭獎'):
+				result['頭獎之一'] = tr.findChildren('span', {'class': 'font-weight-bold'})[0].text + tr.findChildren('span', {'class': 'font-weight-bold etw-color-red'})[0].text
+				result['頭獎之二'] = tr.findChildren('span', {'class': 'font-weight-bold'})[2].text + tr.findChildren('span', {'class': 'font-weight-bold etw-color-red'})[1].text
+				result['頭獎之三'] = tr.findChildren('span', {'class': 'font-weight-bold'})[4].text + tr.findChildren('span', {'class': 'font-weight-bold etw-color-red'})[2].text
+			if(titles[0].text == '增開六獎'):
+				result['增開六獎'] = tr.findChildren('span', {'class': 'font-weight-bold'})[0].text
+	return result
