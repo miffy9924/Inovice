@@ -1,5 +1,9 @@
 import requests
 from bs4 import BeautifulSoup 
+import tkinter as tk
+from tkinter import Entry
+from tkinter import ttk
+import tkinter.messagebox
 
 def findInvoiceNumber(month):
 	url = 'https://invoice.etax.nat.gov.tw/'
@@ -26,3 +30,100 @@ def findInvoiceNumber(month):
 			if(titles[0].text == '增開六獎'):
 				result['增開六獎'] = tr.findChildren('span', {'class': 'font-weight-bold'})[0].text
 	return result
+
+def findInvoiceMonth(month):
+    url = 'https://invoice.etax.nat.gov.tw/'
+    if(month == 'last'):
+        url = 'https://invoice.etax.nat.gov.tw/lastNumber.html'
+    r = requests.get(url)
+    r.encoding = 'utf-8'
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    name = soup.find('a', class_= 'etw-on').text
+
+    # for className in soup.find_all('a'):
+    #     print(className.get('class'))
+    #     # 我要找的class為etw-on
+
+    return name
+
+
+window = tk.Tk()
+window.title("發票對獎系統") #視窗標題名稱
+window.geometry("300x200") #視窗大小
+
+labelTop = tk.Label(window, text = '請選擇發票月份')
+labelTop.grid(padx=70, pady=5) #使用grid來控制位置
+comboxMonth = ttk.Combobox(window, values = [findInvoiceMonth('last'),
+                                               findInvoiceMonth('current')]) #嘗試用爬蟲讀取title
+print(dict(comboxMonth))
+comboxMonth.grid(padx=70, pady=6)
+comboxMonth.current(0)  
+
+
+def callbackFunc(event):
+  if comboxMonth.get() == findInvoiceMonth('last'):
+    return(findInvoiceNumber('last'))
+  elif comboxMonth.get() == findInvoiceMonth('current'):
+    return(findInvoiceNumber('current'))
+
+print(comboxMonth.current(), comboxMonth.get())
+comboxMonth.bind('<<ComboboxSelected>>', callbackFunc)
+
+
+def OK():
+	msg_correct = str(format(entry.get())) + "已成功登錄"  #取得entry輸入文字
+	print(entry.get())
+  
+	msg_error = "輸入錯誤, 請重新輸入"
+
+	if len(str(format(entry.get()))) != 8:
+		print(msg_error, tkinter.messagebox.showinfo(title = '發票登錄系統', message = msg_error))
+	else:
+		print(msg_correct, tkinter.messagebox.showinfo(title = '發票登錄系統', message = msg_correct))
+    #是否把if判斷式加在此處?
+	if comboxMonth.get() == findInvoiceMonth('last'):
+		print(findInvoiceNumber('last'))
+	elif comboxMonth.get() == findInvoiceMonth('current'):
+		print(findInvoiceNumber('current'))
+
+	if comboxMonth.get() == findInvoiceMonth('last'):
+		temp = findInvoiceNumber('last')
+	else:
+		temp = findInvoiceNumber('current')
+
+
+	if format(entry.get()) == temp['特別獎']:
+		print(tkinter.messagebox.showinfo('發票登錄系統', "恭喜你中了特別獎, 獎金1,000萬元"))
+	if format(entry.get()) == temp['特獎']:
+		print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了特獎, 獎金200萬元"))
+	for i in temp['頭獎之一'], temp['頭獎之二'], temp['頭獎之三']:
+		if format(entry.get()) == i:
+			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了頭獎,獎金20萬元"))
+		elif format(entry.get())[-7:] == i[-7:]:
+			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了二獎,獎金4萬元"))
+		elif format(entry.get())[-6:] == i[-6:]:
+			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了三獎,獎金1萬元"))
+		elif format(entry.get())[-5:] == i[-5:]:
+			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了四獎,獎金4千元"))
+		elif format(entry.get())[-4:] == i[-4:]:
+			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了五獎,獎金1千元"))
+		elif format(entry.get())[-3:] == i[-3:]:
+			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了六獎,獎金2百元"))
+	if format(entry.get())[-3:] == temp['增開六獎'][-3:]:
+		print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了增開六獎,獎金2百元"))
+	else:
+		print("結束程式")
+
+
+label = tk.Label(window, text = '發票號碼\n(只需輸入數字8碼)')
+label.grid(padx=70, pady=8)
+  
+entry = tk.Entry(window, width = 20)
+entry.grid(padx=70, pady=9)
+
+button = tk.Button(window, text = "OK", command = OK)
+button.grid(padx=70, pady=10)   
+
+
+window.mainloop()
