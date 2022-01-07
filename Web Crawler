@@ -94,26 +94,26 @@ def OK():
 
 
 	if format(entry.get()) == temp['特別獎']:
-		print(tkinter.messagebox.showinfo('發票登錄系統', "恭喜你中了特別獎, 獎金1,000萬元"))
+		return(tkinter.messagebox.showinfo('發票登錄系統', "恭喜你中了特別獎, 獎金1,000萬元"))
 	if format(entry.get()) == temp['特獎']:
-		print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了特獎, 獎金200萬元"))
+		return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了特獎, 獎金200萬元"))
 	for i in temp['頭獎之一'], temp['頭獎之二'], temp['頭獎之三']:
 		if format(entry.get()) == i:
-			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了頭獎,獎金20萬元"))
+			return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了頭獎,獎金20萬元"))
 		elif format(entry.get())[-7:] == i[-7:]:
-			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了二獎,獎金4萬元"))
+			return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了二獎,獎金4萬元"))
 		elif format(entry.get())[-6:] == i[-6:]:
-			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了三獎,獎金1萬元"))
+			return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了三獎,獎金1萬元"))
 		elif format(entry.get())[-5:] == i[-5:]:
-			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了四獎,獎金4千元"))
+			return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了四獎,獎金4千元"))
 		elif format(entry.get())[-4:] == i[-4:]:
-			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了五獎,獎金1千元"))
+			return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了五獎,獎金1千元"))
 		elif format(entry.get())[-3:] == i[-3:]:
-			print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了六獎,獎金2百元"))
+			return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了六獎,獎金2百元"))
 	if format(entry.get())[-3:] == temp['增開六獎'][-3:]:
-		print(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了增開六獎,獎金2百元"))
-	else:
-		print("結束程式")
+		return(tkinter.messagebox.showinfo('發票登錄系統',"恭喜你中了增開六獎,獎金2百元"))
+	if len(format(entry.get())) == 8:
+		return(tkinter.messagebox.showinfo('發票登錄系統', "尚未中獎, 繼續加油!"))
 
 
 label = tk.Label(window, text = '發票號碼\n(只需輸入數字8碼)')
